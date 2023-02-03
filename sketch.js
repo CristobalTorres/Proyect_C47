@@ -1,5 +1,5 @@
 var score =0;
-var gun,bluebubble,redbubble, bullet, backBoard;
+var gun,bluebubble,redbubble, bullet, backBoard, blast, gameOver;
 
 var gunImg,bubbleImg, bulletImg, blastImg, backBoardImg,backGroundImg;
 
@@ -17,6 +17,7 @@ function preload(){
   redBubbleImg = loadImage("redbubble.png")
   backBoardImg= loadImage("back.jpg")
   backGroundImg= loadImage("backgroundimg.jpg")
+  blastImg = loadImage("blast.png")
 }
 function setup() {
   createCanvas(800, 800);
@@ -30,10 +31,12 @@ function setup() {
   
   bulletGroup = createGroup();   
   blueBubbleGroup = createGroup();   
-  redBubbleGroup = createGroup();   
+  redBubbleGroup = createGroup();  
+  blastGroup = createGroup(); 
   
   heading= createElement("h1");
   scoreboard= createElement("h1");
+  
 }
 
 function draw() {
@@ -46,7 +49,7 @@ function draw() {
   scoreboard.html("Puntuación: "+score)
   scoreboard.style('color:red'); 
   scoreboard.position(width-200,20)
-
+  
   if(gameState===1){
     gun.y=mouseY  
 
@@ -64,18 +67,30 @@ function draw() {
 
     if (blueBubbleGroup.collide(backBoard)){
       handleGameover(blueBubbleGroup);
+      
     }
     if (redBubbleGroup.collide(backBoard)) {
       handleGameover(redBubbleGroup);
+     
     }
     
     //1reto
     if(blueBubbleGroup.collide(bulletGroup)){
       handleBubbleCollision(blueBubbleGroup);
+      blast=createSprite(150, width, 50,20) 
+       blast.y= bluebubble.y,bluebubble.x
+      blast.addImage(blastImg)
+      blast.scale=0.12
+      blastGroup.add(blast)
     }
 
     if(redBubbleGroup.collide(bulletGroup)){
       handleBubbleCollision(redBubbleGroup);
+      blast=createSprite(150, width, 50,20) 
+     blast.y= bluebubble.y,bluebubble.x
+   blast.addImage(blastImg)
+   blast.scale=0.12
+   blastGroup.add(blast)
     }
 
     drawSprites();
@@ -114,8 +129,8 @@ function handleBubbleCollision(bubbleGroup){
     if (life > 0) {
        score=score+1;
     }
-
- 
+  
+    blastGroup.destroyEach()
     bulletGroup.destroyEach()
     bubbleGroup.destroyEach()
 }
@@ -130,16 +145,29 @@ function handleGameover(bubbleGroup){
     
     if (life === 0) {
       gameState=2
-      
+      //adicion personal
+     GameOver();
+     // .sweetalert({
+     //   title:`FIN DEL JUEGO`,
+     //   text:"UPS, lo de liste a todos lo objetivos",
+     //   imageUrl:"https://raw.githubusercontent.com/vishalgaddam873/p5-multiplayer-car-race-game/master/assets/cup.png",
+     //   confirmButtonText:"OK"
+    //  })
     }
     
       console.log(life)
-     if ( life===0 ){
-        fill("red");
-        stroke("black")
-        text("FIN DEL JUEGO",350,200);
-        textSize(1000);
-      }
+     
+        
+      
+  
     
-    
+}
+//adicion personal
+function GameOver(){
+  gameOver = createElement("h1")
+  gameOver.html("FIN DEL JUEGO")
+  gameOver.style('color:red')
+  gameOver.position(250,250)
+  
+
 }
